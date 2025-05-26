@@ -1,8 +1,8 @@
 """user addded
 
-Revision ID: 3ded09611608
+Revision ID: 576e736bae7d
 Revises: a8329b161836
-Create Date: 2025-05-26 19:50:35.115477
+Create Date: 2025-05-26 20:01:49.102618
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '3ded09611608'
+revision: str = '576e736bae7d'
 down_revision: Union[str, None] = 'a8329b161836'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -37,7 +37,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
     op.create_index(op.f('ix_user_username'), 'user', ['username'], unique=True)
     op.add_column('product', sa.Column('supplier_id', sa.Integer(), nullable=False))
-    op.create_foreign_key(op.f('fk_product_supplier_id_user'), 'product', 'user', ['supplier_id'], ['user_id'])
+    op.create_foreign_key(op.f('fk_product_supplier_id_user'), 'product', 'user', ['supplier_id'], ['user_id'], ondelete='SET NULL')
     # ### end Alembic commands ###
 
 
