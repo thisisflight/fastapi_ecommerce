@@ -16,5 +16,9 @@ class Product(Base):
     stock: Mapped[int] = mapped_column(Integer, server_default="0")
     rating: Mapped[float] = mapped_column(Float, server_default="0.0")
     is_active: Mapped[bool] = mapped_column(default=True)
+
     category_id: Mapped[int] = mapped_column(Integer, ForeignKey('category.category_id'))
     category = relationship('Category', back_populates='products', uselist=False)
+
+    supplier_id: Mapped[int] = mapped_column(Integer, ForeignKey('user.user_id'))
+    supplier = relationship('User', back_populates='products', uselist=False)
