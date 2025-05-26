@@ -20,5 +20,5 @@ class Product(Base):
     category_id: Mapped[int] = mapped_column(Integer, ForeignKey('category.category_id'))
     category = relationship('Category', back_populates='products', uselist=False)
 
-    supplier_id: Mapped[int] = mapped_column(Integer, ForeignKey('user.user_id'))
+    supplier_id: Mapped[int] = mapped_column(Integer, ForeignKey('user.user_id', ondelete="SET NULL"))
     supplier = relationship('User', back_populates='products', uselist=False)
