@@ -3,8 +3,8 @@ from typing import Annotated
 from fastapi import Depends
 from slugify import slugify
 
-from app.repos import get_product_repo, ProductRepository
-from app.schemas import CreateProductIn, CreateProductDB, ProductSchema, UpdateProductIn, UpdateProductDB
+from app.repos import ProductRepository, get_product_repo
+from app.schemas import CreateProductDB, CreateProductIn, ProductSchema, UpdateProductDB, UpdateProductIn
 
 
 class ProductService:
@@ -37,8 +37,8 @@ class ProductService:
         existing_product = await self.product_repo.get_product_by_id(product_id)
         if existing_product:
             update_data = product_in.model_dump(exclude_unset=True)
-            if 'name' in update_data:
-                update_data['slug'] = slugify(update_data['name'])
+            if "name" in update_data:
+                update_data["slug"] = slugify(update_data["name"])
             product_db = UpdateProductDB(**update_data)
             product = await self.product_repo.update_product(product_id, product_db)
             return ProductSchema.model_validate(product)

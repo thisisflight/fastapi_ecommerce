@@ -3,8 +3,8 @@ from typing import Annotated
 from fastapi import Depends
 from slugify import slugify
 
-from app.repos import get_category_repo, CategoryRepository
-from app.schemas import (CategorySchema, CreateCategoryIn, CreateCategoryDB, UpdateCategoryIn, UpdateCategoryDB)
+from app.repos import CategoryRepository, get_category_repo
+from app.schemas import CategorySchema, CreateCategoryDB, CreateCategoryIn, UpdateCategoryDB, UpdateCategoryIn
 
 
 class CategoryService:

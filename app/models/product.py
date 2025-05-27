@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from sqlalchemy import String, Integer, Float, Text, Numeric, ForeignKey, BigInteger
+from sqlalchemy import BigInteger, Float, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.backend import Base
@@ -17,8 +17,8 @@ class Product(Base):
     rating: Mapped[float] = mapped_column(Float, server_default="0.0")
     is_active: Mapped[bool] = mapped_column(default=True)
 
-    category_id: Mapped[int] = mapped_column(Integer, ForeignKey('category.category_id'))
-    category = relationship('Category', back_populates='products', uselist=False)
+    category_id: Mapped[int] = mapped_column(Integer, ForeignKey("category.category_id"))
+    category = relationship("Category", back_populates="products", uselist=False)
 
-    supplier_id: Mapped[int] = mapped_column(Integer, ForeignKey('user.user_id', ondelete="SET NULL"))
-    supplier = relationship('User', back_populates='products', uselist=False)
+    supplier_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.user_id", ondelete="SET NULL"))
+    supplier = relationship("User", back_populates="products", uselist=False)

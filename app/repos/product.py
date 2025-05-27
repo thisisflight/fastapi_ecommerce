@@ -1,10 +1,10 @@
 from fastapi import Depends
-from sqlalchemy import select, update, delete
+from sqlalchemy import delete, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend import get_db
-from app.models import Product, Category
+from app.models import Category, Product
 from app.schemas import CreateProductDB, UpdateProductDB
 
 
@@ -18,11 +18,12 @@ class ProductRepository:
         return result.scalars().all()
 
     async def create_product(self, product: CreateProductDB):
-        stmt = (insert(Product)
-                .values(**product.model_dump())
-                .on_conflict_do_update(index_elements=["slug"],
-                                       set_={"price": product.price, "stock": product.stock})
-                .returning(Product))
+        stmt = (
+            insert(Product)
+            .values(**product.model_dump())
+            .on_conflict_do_update(index_elements=["slug"], set_={"price": product.price, "stock": product.stock})
+            .returning(Product)
+        )
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
@@ -47,10 +48,12 @@ class ProductRepository:
         return result.scalars().all()
 
     async def update_product(self, product_id: int, product: UpdateProductDB):
-        stmt = (update(Product)
-                .where(Product.product_id == product_id)
-                .values(**product.model_dump(exclude_unset=True))
-                .returning(Product))
+        stmt = (
+            update(Product)
+            .where(Product.product_id == product_id)
+            .values(**product.model_dump(exclude_unset=True))
+            .returning(Product)
+        )
         result = await self.session.execute(stmt)
         return result.scalar()
 
