@@ -4,7 +4,13 @@ from fastapi import Depends
 from slugify import slugify
 
 from app.repos import ProductRepository, get_product_repo
-from app.schemas import CreateProductDB, CreateProductIn, ProductSchema, UpdateProductDB, UpdateProductIn
+from app.schemas import (
+    CreateProductDB,
+    CreateProductIn,
+    ProductSchema,
+    UpdateProductDB,
+    UpdateProductIn,
+)
 
 
 class ProductService:

@@ -37,7 +37,9 @@ class CategoryRepository:
         result = await self.session.execute(stmt)
         return result.scalar()
 
-    async def update_category(self, category_id: int, category: UpdateCategoryDB) -> Category | None:
+    async def update_category(
+        self, category_id: int, category: UpdateCategoryDB
+    ) -> Category | None:
         stmt = (
             update(Category)
             .where(Category.category_id == category_id)

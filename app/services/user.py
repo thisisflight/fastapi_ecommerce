@@ -13,7 +13,9 @@ class UserService:
         self.user_repo = repo
 
     async def create_user(self, user_schema: CreateUserIn):
-        is_user_exists = await self.user_repo.check_if_user_exists(user_schema.username, user_schema.email)
+        is_user_exists = await self.user_repo.check_if_user_exists(
+            user_schema.username, user_schema.email
+        )
         if not is_user_exists:
             hashed_password = pwd_context.hash(user_schema.password)
             user_data = user_schema.model_dump(exclude={"password"})
@@ -28,7 +30,9 @@ class UserService:
 
     async def authenticate_user_via_jwt(self, username: str, password: str):
         user = await self.user_repo.get_user_by_username(username)
-        if not user or not pwd_context.verify(password, user.hashed_password) or user.is_active == False:  # noqa
+        if (
+            not user or not pwd_context.verify(password, user.hashed_password) or not user.is_active
+        ):  # noqa
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid authentication credentials",

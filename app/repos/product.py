@@ -21,7 +21,9 @@ class ProductRepository:
         stmt = (
             insert(Product)
             .values(**product.model_dump())
-            .on_conflict_do_update(index_elements=["slug"], set_={"price": product.price, "stock": product.stock})
+            .on_conflict_do_update(
+                index_elements=["slug"], set_={"price": product.price, "stock": product.stock}
+            )
             .returning(Product)
         )
         result = await self.session.execute(stmt)

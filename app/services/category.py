@@ -4,7 +4,13 @@ from fastapi import Depends
 from slugify import slugify
 
 from app.repos import CategoryRepository, get_category_repo
-from app.schemas import CategorySchema, CreateCategoryDB, CreateCategoryIn, UpdateCategoryDB, UpdateCategoryIn
+from app.schemas import (
+    CategorySchema,
+    CreateCategoryDB,
+    CreateCategoryIn,
+    UpdateCategoryDB,
+    UpdateCategoryIn,
+)
 
 
 class CategoryService:
@@ -31,7 +37,9 @@ class CategoryService:
         if category:
             return CategorySchema.model_validate(category)
 
-    async def update_category(self, category_id: int, category_in: UpdateCategoryIn) -> CategorySchema | None:
+    async def update_category(
+        self, category_id: int, category_in: UpdateCategoryIn
+    ) -> CategorySchema | None:
         existing_category = await self.category_repo.get_category_by_id(category_id)
         if existing_category:
             slug = slugify(category_in.name)

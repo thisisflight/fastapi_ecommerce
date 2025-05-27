@@ -29,11 +29,15 @@ async def product_detail(service: Annotated[ProductService, Depends()], product_
 
 
 @router.patch("/{product_id}", response_model=ProductSchema)
-async def update_product(service: Annotated[ProductService, Depends()], product_id: int, product: UpdateProductIn):
+async def update_product(
+    service: Annotated[ProductService, Depends()], product_id: int, product: UpdateProductIn
+):
     return await service.update_product(product_id, product)
 
 
 @router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_product(service: Annotated[ProductService, Depends()], product_id: int):
     is_deleted = await service.delete_product(product_id)
-    return Response(status_code=status.HTTP_204_NO_CONTENT if is_deleted else status.HTTP_404_NOT_FOUND)
+    return Response(
+        status_code=status.HTTP_204_NO_CONTENT if is_deleted else status.HTTP_404_NOT_FOUND
+    )

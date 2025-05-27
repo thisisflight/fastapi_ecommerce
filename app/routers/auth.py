@@ -21,7 +21,12 @@ async def create_user(service: Annotated[UserService, Depends()], user: CreateUs
 
 
 @router.post("/token")
-async def login(service: Annotated[UserService, Depends()], form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    user_jwt_schema = await service.authenticate_user_via_jwt(form_data.username, form_data.password)
+async def login(
+    service: Annotated[UserService, Depends()],
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+):
+    user_jwt_schema = await service.authenticate_user_via_jwt(
+        form_data.username, form_data.password
+    )
     token = generate_jwt_token(user_jwt_schema)
     return {"access_token": token, "token_type": "bearer"}
