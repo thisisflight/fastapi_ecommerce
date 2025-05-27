@@ -1,5 +1,5 @@
 from fastapi import Depends
-from sqlalchemy import select, update, delete
+from sqlalchemy import delete, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -18,10 +18,12 @@ class CategoryRepository:
         return result.scalars().all()
 
     async def create_category(self, category: CreateCategoryDB) -> Category:
-        stmt = (insert(Category)
-                .values(**category.model_dump())
-                .on_conflict_do_update(index_elements=["slug"], set_={"slug": category.slug})
-                .returning(Category))
+        stmt = (
+            insert(Category)
+            .values(**category.model_dump())
+            .on_conflict_do_update(index_elements=["slug"], set_={"slug": category.slug})
+            .returning(Category)
+        )
         result = await self.session.execute(stmt)
         return result.scalar()
 
@@ -36,10 +38,12 @@ class CategoryRepository:
         return result.scalar()
 
     async def update_category(self, category_id: int, category: UpdateCategoryDB) -> Category | None:
-        stmt = (update(Category)
-                .where(Category.category_id == category_id)
-                .values(**category.model_dump())
-                .returning(Category))
+        stmt = (
+            update(Category)
+            .where(Category.category_id == category_id)
+            .values(**category.model_dump())
+            .returning(Category)
+        )
         result = await self.session.execute(stmt)
         return result.scalar()
 

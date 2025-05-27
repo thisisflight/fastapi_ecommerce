@@ -1,5 +1,5 @@
 from sqlalchemy import BigInteger, String
-from sqlalchemy.orm import mapped_column, Mapped, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.backend import Base
 
@@ -16,4 +16,4 @@ class User(Base):
     is_supplier: Mapped[bool] = mapped_column(default=False)
     is_customer: Mapped[bool] = mapped_column(default=True)
 
-    products = relationship('Product', back_populates='supplier')
+    products = relationship("Product", back_populates="supplier")
