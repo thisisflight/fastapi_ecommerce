@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 from app.backend import settings
 
@@ -9,7 +9,7 @@ class CreateUserIn(BaseModel):
     first_name: str
     last_name: str
     username: str
-    email: str
+    email: EmailStr
     password: str
 
 
@@ -17,7 +17,7 @@ class CreateUserDB(BaseModel):
     first_name: str
     last_name: str
     username: str
-    email: str
+    email: EmailStr
     hashed_password: str
 
     class Config:
@@ -29,7 +29,7 @@ class UserSchema(BaseModel):
     first_name: str
     last_name: str
     username: str
-    email: str
+    email: EmailStr
     is_active: bool
     is_admin: bool
     is_supplier: bool
