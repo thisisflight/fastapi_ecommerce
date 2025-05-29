@@ -8,3 +8,11 @@ run:
 
 push:
 	git push -u origin HEAD
+
+lint:
+	pre-commit run --all-files
+
+help:
+	@echo "run - run server (9000 port)"
+	@echo "push - push to remote (sets upstream by default)"
+	@echo "lint - pre-commit lint"
