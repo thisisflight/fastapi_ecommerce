@@ -1,8 +1,8 @@
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 
-from app.exceptions import UserAlreadyExists
+from app.exceptions import InvalidCredentialsError, UserAlreadyExists
 from app.repos import UserRepository, get_user_repo
 from app.schemas import CreateUserDB, CreateUserIn, UserJWTSchema, UserSchema
 from app.tools import pwd_context
@@ -30,12 +30,6 @@ class UserService:
 
     async def authenticate_user_via_jwt(self, username: str, password: str):
         user = await self.user_repo.get_user_by_username(username)
-        if (
-            not user or not pwd_context.verify(password, user.hashed_password) or not user.is_active
-        ):  # noqa
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid authentication credentials",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
+        if not user or not pwd_context.verify(password, user.hashed_password) or not user.is_active:
+            raise InvalidCredentialsError
         return UserJWTSchema.model_validate(user)
