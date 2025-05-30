@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Response, status
 
-from app.dependency import role_checker
+from app.dependency import require_roles
 from app.schemas import CategorySchema, CreateCategoryIn, UpdateCategoryIn, UserSchema
 from app.services import CategoryService
 from app.tools import UserRole
@@ -19,7 +19,7 @@ async def get_all_categories(service: Annotated[CategoryService, Depends()]):
 async def create_category(
     service: Annotated[CategoryService, Depends()],
     category: CreateCategoryIn,
-    current_user: Annotated[UserSchema, Depends(role_checker([UserRole.ADMIN]))],
+    current_user: Annotated[UserSchema, Depends(require_roles((UserRole.ADMIN,)))],
 ):
     return await service.create_category(category)
 
@@ -39,7 +39,7 @@ async def update_category(
     service: Annotated[CategoryService, Depends()],
     category_id: int,
     category: UpdateCategoryIn,
-    current_user: Annotated[UserSchema, Depends(role_checker([UserRole.ADMIN]))],
+    current_user: Annotated[UserSchema, Depends(require_roles((UserRole.ADMIN,)))],
 ):
     return await service.update_category(category_id, category)
 
@@ -48,7 +48,7 @@ async def update_category(
 async def delete_category(
     service: Annotated[CategoryService, Depends()],
     category_id: int,
-    current_user: Annotated[UserSchema, Depends(role_checker([UserRole.ADMIN]))],
+    current_user: Annotated[UserSchema, Depends(require_roles((UserRole.ADMIN,)))],
 ):
     is_deleted: bool = await service.delete_category(category_id)
     return Response(

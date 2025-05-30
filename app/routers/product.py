@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Response, status
 
-from app.dependency import role_checker
+from app.dependency import require_roles
 from app.schemas import CreateProductIn, ProductSchema, UpdateProductIn, UserSchema
 from app.services import ProductService
 from app.tools import UserRole
@@ -19,7 +19,9 @@ async def all_products(service: Annotated[ProductService, Depends()]):
 async def create_product(
     service: Annotated[ProductService, Depends()],
     product: CreateProductIn,
-    current_user: Annotated[UserSchema, Depends(role_checker([UserRole.ADMIN, UserRole.SUPPLIER]))],
+    current_user: Annotated[
+        UserSchema, Depends(require_roles((UserRole.ADMIN, UserRole.SUPPLIER)))
+    ],
 ):
     return await service.create_product(product, current_user)
 
@@ -39,7 +41,9 @@ async def update_product(
     service: Annotated[ProductService, Depends()],
     product_id: int,
     product: UpdateProductIn,
-    current_user: Annotated[UserSchema, Depends(role_checker([UserRole.ADMIN, UserRole.SUPPLIER]))],
+    current_user: Annotated[
+        UserSchema, Depends(require_roles((UserRole.ADMIN, UserRole.SUPPLIER)))
+    ],
 ):
     return await service.update_product(product_id, product)
 
@@ -48,7 +52,7 @@ async def update_product(
 async def delete_product(
     service: Annotated[ProductService, Depends()],
     product_id: int,
-    current_user: Annotated[UserSchema, Depends(role_checker([UserRole.ADMIN]))],
+    current_user: Annotated[UserSchema, Depends(require_roles((UserRole.ADMIN,)))],
 ):
     is_deleted = await service.delete_product(product_id)
     return Response(
