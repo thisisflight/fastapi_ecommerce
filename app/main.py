@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from starlette.responses import JSONResponse, RedirectResponse
 
-from app import exceptions
 from app.routers import all_routers
+from app.tools import exception_handlers
 
 app = FastAPI(summary="My e-commerce app")
 [app.include_router(router) for router in all_routers]
@@ -13,26 +13,14 @@ async def root() -> dict:
     return RedirectResponse(url="/docs")
 
 
-@app.exception_handler(exceptions.UserPermissionError)
-async def user_permission_error_handler(request, exception):
-    return JSONResponse(content={"detail": "User does not have permission"}, status_code=403)
+def create_exception_handler(status_code: int, detail: str):
+    async def handler(request, exception):
+        return JSONResponse(content={"detail": detail}, status_code=status_code)
+
+    return handler
 
 
-@app.exception_handler(exceptions.UserAlreadyExists)
-async def user_already_exists_handler(request, exception):
-    return JSONResponse(content={"detail": "User already exists"}, status_code=409)
-
-
-@app.exception_handler(exceptions.UserNotFoundError)
-async def user_not_found_handler(request, exception):
-    return JSONResponse(content={"detail": "User not found"}, status_code=404)
-
-
-@app.exception_handler(exceptions.ProductNotFoundError)
-async def product_not_found_handler(request, exception):
-    return JSONResponse(content={"detail": "Product not found"}, status_code=404)
-
-
-@app.exception_handler(exceptions.InvalidCredentialsError)
-async def invalid_credentials_handler(request, exception):
-    return JSONResponse(content={"detail": "Invalid credentials"}, status_code=401)
+for exc, params in exception_handlers.items():
+    app.add_exception_handler(
+        exc, create_exception_handler(params["status_code"], params["detail"])
+    )
