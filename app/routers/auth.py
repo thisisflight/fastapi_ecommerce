@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.dependency import role_checker
+from app.dependency import get_current_user
 from app.schemas import CreateUserIn, UserSchema
 from app.services import UserService
 from app.tools import generate_jwt_token
@@ -29,7 +29,7 @@ async def login(
 
 
 @router.get("/me")
-async def get_current_user(
-    current_user: Annotated[UserSchema, Depends(role_checker())]
+async def profile_detail_view(
+    current_user: Annotated[UserSchema, Depends(get_current_user)]
 ) -> UserSchema:
     return current_user
