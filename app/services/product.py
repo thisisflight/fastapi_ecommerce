@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import Depends
 from slugify import slugify
 
+from app.exceptions import ProductNotFoundError
 from app.repos import ProductRepository, get_product_repo
 from app.schemas import (
     CreateProductDB,
@@ -10,6 +11,7 @@ from app.schemas import (
     ProductSchema,
     UpdateProductDB,
     UpdateProductIn,
+    UserSchema,
 )
 
 
@@ -17,9 +19,10 @@ class ProductService:
     def __init__(self, repo: Annotated[ProductRepository, Depends(get_product_repo)]):
         self.product_repo = repo
 
-    async def create_product(self, product: CreateProductIn):
+    async def create_product(self, product: CreateProductIn, user: UserSchema):
         slug = slugify(product.name)
-        product_db = CreateProductDB(slug=slug, **product.model_dump())
+        supplier_id = user.user_id
+        product_db = CreateProductDB(slug=slug, supplier_id=supplier_id, **product.model_dump())
         result = await self.product_repo.create_product(product_db)
         return ProductSchema.model_validate(result)
 
@@ -29,7 +32,9 @@ class ProductService:
 
     async def get_product_by_id(self, product_id: int):
         product = await self.product_repo.get_product_by_id(product_id)
-        return ProductSchema.model_validate(product)
+        if product:
+            return ProductSchema.model_validate(product)
+        raise ProductNotFoundError
 
     async def get_products_by_category_slug(self, category_slug: str):
         products = await self.product_repo.get_products_by_category_slug(category_slug)
@@ -37,7 +42,9 @@ class ProductService:
 
     async def get_product_by_slug(self, slug: str):
         product = await self.product_repo.get_product_by_slug(slug)
-        return ProductSchema.model_validate(product)
+        if product:
+            return ProductSchema.model_validate(product)
+        raise ProductNotFoundError
 
     async def update_product(self, product_id: int, product_in: UpdateProductIn):
         existing_product = await self.product_repo.get_product_by_id(product_id)
@@ -48,6 +55,7 @@ class ProductService:
             product_db = UpdateProductDB(**update_data)
             product = await self.product_repo.update_product(product_id, product_db)
             return ProductSchema.model_validate(product)
+        raise ProductNotFoundError
 
     async def delete_product(self, product_id: int):
         return await self.product_repo.delete_product(product_id)

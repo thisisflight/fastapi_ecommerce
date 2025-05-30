@@ -17,6 +17,7 @@ class CreateProductIn(BaseModel):
 
 class CreateProductDB(CreateProductIn):
     slug: str
+    supplier_id: int
 
 
 class UpdateProductIn(BaseModel):
@@ -26,6 +27,7 @@ class UpdateProductIn(BaseModel):
     image_url: str | None = None
     stock: int | None = None
     category_id: int | None = None
+    supplier_id: int | None = None
 
 
 class UpdateProductDB(UpdateProductIn):
@@ -43,6 +45,7 @@ class ProductSchema(BaseModel):
     rating: float
     is_active: bool
     category_id: int
+    supplier_id: int
 
     class Config:
         from_attributes = True

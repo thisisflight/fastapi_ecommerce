@@ -13,6 +13,11 @@ async def root() -> dict:
     return RedirectResponse(url="/docs")
 
 
+@app.exception_handler(exceptions.UserPermissionError)
+async def user_permission_error_handler(request, exception):
+    return JSONResponse(content={"detail": "User does not have permission"}, status_code=403)
+
+
 @app.exception_handler(exceptions.UserAlreadyExists)
 async def user_already_exists_handler(request, exception):
     return JSONResponse(content={"detail": "User already exists"}, status_code=409)
@@ -21,6 +26,11 @@ async def user_already_exists_handler(request, exception):
 @app.exception_handler(exceptions.UserNotFoundError)
 async def user_not_found_handler(request, exception):
     return JSONResponse(content={"detail": "User not found"}, status_code=404)
+
+
+@app.exception_handler(exceptions.ProductNotFoundError)
+async def product_not_found_handler(request, exception):
+    return JSONResponse(content={"detail": "Product not found"}, status_code=404)
 
 
 @app.exception_handler(exceptions.InvalidCredentialsError)

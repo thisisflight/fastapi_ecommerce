@@ -2,8 +2,10 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Response, status
 
-from app.schemas import CreateProductIn, ProductSchema, UpdateProductIn
+from app.dependency import role_checker
+from app.schemas import CreateProductIn, ProductSchema, UpdateProductIn, UserSchema
 from app.services import ProductService
+from app.tools import UserRole
 
 router = APIRouter(prefix="/products", tags=["products"])
 
@@ -14,8 +16,12 @@ async def all_products(service: Annotated[ProductService, Depends()]):
 
 
 @router.post("", response_model=ProductSchema, status_code=status.HTTP_201_CREATED)
-async def create_product(service: Annotated[ProductService, Depends()], product: CreateProductIn):
-    return await service.create_product(product)
+async def create_product(
+    service: Annotated[ProductService, Depends()],
+    product: CreateProductIn,
+    current_user: Annotated[UserSchema, Depends(role_checker([UserRole.ADMIN, UserRole.SUPPLIER]))],
+):
+    return await service.create_product(product, current_user)
 
 
 @router.get("/{category_slug}", response_model=list[ProductSchema])
@@ -30,13 +36,20 @@ async def product_detail(service: Annotated[ProductService, Depends()], product_
 
 @router.patch("/{product_id}", response_model=ProductSchema)
 async def update_product(
-    service: Annotated[ProductService, Depends()], product_id: int, product: UpdateProductIn
+    service: Annotated[ProductService, Depends()],
+    product_id: int,
+    product: UpdateProductIn,
+    current_user: Annotated[UserSchema, Depends(role_checker([UserRole.ADMIN, UserRole.SUPPLIER]))],
 ):
     return await service.update_product(product_id, product)
 
 
 @router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_product(service: Annotated[ProductService, Depends()], product_id: int):
+async def delete_product(
+    service: Annotated[ProductService, Depends()],
+    product_id: int,
+    current_user: Annotated[UserSchema, Depends(role_checker([UserRole.ADMIN]))],
+):
     is_deleted = await service.delete_product(product_id)
     return Response(
         status_code=status.HTTP_204_NO_CONTENT if is_deleted else status.HTTP_404_NOT_FOUND
