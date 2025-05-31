@@ -17,3 +17,4 @@ class User(Base):
     is_customer: Mapped[bool] = mapped_column(default=True)
 
     products = relationship("Product", back_populates="supplier")
+    review = relationship("Review", back_populates="user", uselist=False)

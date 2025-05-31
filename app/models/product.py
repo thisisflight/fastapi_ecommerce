@@ -24,3 +24,5 @@ class Product(Base):
         Integer, ForeignKey("user.user_id", ondelete="SET NULL")
     )
     supplier = relationship("User", back_populates="products", uselist=False)
+
+    reviews: Mapped[list["Review"]] = relationship(back_populates="product")  # noqa
