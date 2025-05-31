@@ -4,7 +4,13 @@ import jwt
 from fastapi import Depends
 
 from app.backend import settings
-from app.exceptions import InvalidCredentialsError, UserNotFoundError, UserPermissionError
+from app.exceptions import (
+    InactiveUserError,
+    InvalidCredentialsError,
+    UserNotFoundError,
+    UserPermissionError,
+    WrongUsernameCredentialsError,
+)
 from app.schemas import UserSchema
 from app.services import UserService
 from app.tools import UserRole
@@ -19,8 +25,11 @@ async def get_current_user(
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         username: str = payload.get("sub")
         if not username:
-            raise InvalidCredentialsError
-        return await service.get_user_by_username(username)
+            raise WrongUsernameCredentialsError
+        user = await service.get_user_by_username(username)
+        if not user.is_active:
+            raise InactiveUserError
+        return user
     except (jwt.PyJWTError, UserNotFoundError):
         raise InvalidCredentialsError
 

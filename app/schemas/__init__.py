@@ -12,6 +12,7 @@ from .product import (
     UpdateProductDB,
     UpdateProductIn,
 )
+from .review import CreateReviewDB, CreateReviewIn, DeactivateReviewDB, ReviewSchema
 from .user import CreateUserDB, CreateUserIn, UserJWTSchema, UserSchema
 
 __all__ = [
@@ -29,4 +30,8 @@ __all__ = [
     "CreateUserDB",
     "UserSchema",
     "UserJWTSchema",
+    "CreateReviewIn",
+    "CreateReviewDB",
+    "DeactivateReviewDB",
+    "ReviewSchema",
 ]
