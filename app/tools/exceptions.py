@@ -6,4 +6,5 @@ exception_handlers = {
     exceptions.UserNotFoundError: {"status_code": 404, "detail": "User not found"},
     exceptions.ProductNotFoundError: {"status_code": 404, "detail": "Product not found"},
     exceptions.InvalidCredentialsError: {"status_code": 401, "detail": "Invalid credentials"},
+    exceptions.CategoryNotFoundError: {"status_code": 404, "detail": "Category not found"},
 }
