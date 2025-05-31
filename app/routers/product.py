@@ -2,9 +2,16 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Response, status
 
-from app.dependency import require_roles
-from app.schemas import CreateProductIn, ProductSchema, UpdateProductIn, UserSchema
-from app.services import ProductService
+from app.dependency import get_current_user, require_roles
+from app.schemas import (
+    CreateProductIn,
+    CreateReviewIn,
+    ProductSchema,
+    ReviewSchema,
+    UpdateProductIn,
+    UserSchema,
+)
+from app.services import ProductService, ReviewService
 from app.tools import UserRole
 
 router = APIRouter(prefix="/products", tags=["products"])
@@ -60,3 +67,26 @@ async def delete_product(
     return Response(
         status_code=status.HTTP_204_NO_CONTENT if is_deleted else status.HTTP_404_NOT_FOUND
     )
+
+
+@router.get("/{product_id}/reviews", response_model=list[ReviewSchema], tags=["reviews"])
+async def products_reviews(
+    product_service: Annotated[ProductService, Depends()],
+    review_service: Annotated[ReviewService, Depends()],
+    product_id: int,
+    current_user: Annotated[UserSchema, Depends(get_current_user)],
+):
+    product = await product_service.get_product_by_id(product_id)
+    return await review_service.get_reviews_by_product_id(product.product_id)
+
+
+@router.post("/{product_id}/reviews", response_model=ReviewSchema, tags=["reviews"])
+async def create_review(
+    product_service: Annotated[ProductService, Depends()],
+    review_service: Annotated[ReviewService, Depends()],
+    product_id: int,
+    review: CreateReviewIn,
+    current_user: Annotated[UserSchema, Depends(require_roles((UserRole.CUSTOMER,)))],
+):
+    product = await product_service.get_product_by_id(product_id)
+    return await review_service.create_review(review, current_user.user_id, product.product_id)
