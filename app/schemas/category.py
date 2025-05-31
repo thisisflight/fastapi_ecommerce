@@ -1,8 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from app.schemas.constants import CATEGORY_NAME_MAX_LENGTH, CATEGORY_NAME_MIN_LENGTH
+from app.schemas.mixins import ValidateCategoryNameMixin
 
 
-class CreateCategoryIn(BaseModel):
-    name: str
+class CreateCategoryIn(ValidateCategoryNameMixin, BaseModel):
+    name: str = Field(..., min_length=CATEGORY_NAME_MIN_LENGTH, max_length=CATEGORY_NAME_MAX_LENGTH)
     parent_id: int | None = None
 
 
@@ -10,8 +13,8 @@ class CreateCategoryDB(CreateCategoryIn):
     slug: str
 
 
-class UpdateCategoryIn(BaseModel):
-    name: str
+class UpdateCategoryIn(ValidateCategoryNameMixin, BaseModel):
+    name: str = Field(..., min_length=CATEGORY_NAME_MIN_LENGTH, max_length=CATEGORY_NAME_MAX_LENGTH)
 
 
 class UpdateCategoryDB(UpdateCategoryIn):
