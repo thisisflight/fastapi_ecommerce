@@ -80,7 +80,12 @@ async def products_reviews(
     return await review_service.get_reviews_by_product_id(product.product_id)
 
 
-@router.post("/{product_id}/reviews", response_model=ReviewSchema, tags=["reviews"])
+@router.post(
+    "/{product_id}/reviews",
+    response_model=ReviewSchema,
+    tags=["reviews"],
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_review(
     product_service: Annotated[ProductService, Depends()],
     review_service: Annotated[ReviewService, Depends()],
