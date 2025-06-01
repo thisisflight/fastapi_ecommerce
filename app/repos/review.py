@@ -35,7 +35,7 @@ class ReviewRepository:
         result = await self.session.execute(stmt)
         return result.scalars().all()
 
-    async def get_active_reviews_with_grades_by_product_id(self, product_id: int) -> Sequence[int]:
+    async def get_active_reviews_grades_by_product_id(self, product_id: int) -> Sequence[int]:
         stmt = select(Review.grade).where(
             Review.is_active == True, Review.product_id == product_id  # noqa: E712
         )
@@ -43,9 +43,7 @@ class ReviewRepository:
         return result.scalars().all()
 
     async def recalculate_product_rate(self, product_id: int) -> Product:
-        reviews_grades = await self.get_active_reviews_with_grades_by_product_id(
-            product_id=product_id
-        )
+        reviews_grades = await self.get_active_reviews_grades_by_product_id(product_id=product_id)
         try:
             rating = round(sum(reviews_grades) / len(reviews_grades), 1)
         except ZeroDivisionError:
