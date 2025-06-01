@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_TIME: int
+    DEBUG: bool
 
     class Config:
         case_sensitive = True
