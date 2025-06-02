@@ -16,8 +16,8 @@ async def create_user(service: Annotated[UserService, Depends()], user: CreateUs
     return await service.create_user(user)
 
 
-@router.post("/verify/email")
-async def verify_email(service: Annotated[UserService, Depends()], token: str):
+@router.get("/verify/email")
+async def verify_email(service: Annotated[UserService, Depends()], token: str) -> UserSchema:
     return await service.verify_email(token)
 
 

@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 from starlette.responses import JSONResponse, RedirectResponse
 
 from app.log import LoggingMiddleware
@@ -6,7 +6,9 @@ from app.routers import all_routers
 from app.tools import exception_handlers
 
 app = FastAPI(summary="My e-commerce app")
-[app.include_router(router) for router in all_routers]
+main_router = APIRouter(prefix="/api")
+[main_router.include_router(router) for router in all_routers]
+app.include_router(main_router)
 app.add_middleware(LoggingMiddleware)
 
 

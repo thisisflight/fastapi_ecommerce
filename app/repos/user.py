@@ -12,8 +12,7 @@ class UserRepository:
         self.session = session
 
     async def create_user(self, user_schema: CreateUserDB) -> User:
-        user_db = CreateUserDB(**user_schema.model_dump())
-        stmt = insert(User).values(**user_db.model_dump()).returning(User)
+        stmt = insert(User).values(**user_schema.model_dump()).returning(User)
         result = await self.session.execute(stmt)
         return result.scalar()
 
