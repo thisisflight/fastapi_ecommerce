@@ -12,6 +12,9 @@ push:
 lint:
 	pre-commit run --all-files
 
+celery:
+	celery -A app.backend.celery worker --loglevel=debug
+
 help:
 	@echo "run - run server (9000 port)"
 	@echo "push - push to remote (sets upstream by default)"

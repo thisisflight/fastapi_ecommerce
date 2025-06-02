@@ -1,5 +1,5 @@
 from fastapi import Depends
-from sqlalchemy import exists, insert, or_, select
+from sqlalchemy import exists, insert, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend import get_db
@@ -29,6 +29,11 @@ class UserRepository:
 
     async def get_user_by_email(self, email: str) -> User | None:
         stmt = select(User).where(User.email == email)
+        result = await self.session.execute(stmt)
+        return result.scalar()
+
+    async def activate_user(self, email):
+        stmt = update(User).where(User.email == email).values(is_active=True).returning(User)
         result = await self.session.execute(stmt)
         return result.scalar()
 

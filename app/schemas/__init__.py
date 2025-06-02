@@ -13,7 +13,7 @@ from .product import (
     UpdateProductIn,
 )
 from .review import CreateReviewDB, CreateReviewIn, DeactivateReviewDB, ReviewSchema
-from .user import CreateUserDB, CreateUserIn, UserJWTSchema, UserSchema
+from .user import CreateUserDB, CreateUserIn, EmailVerifyToken, UserJWTSchema, UserSchema
 
 __all__ = [
     "CreateCategoryIn",
@@ -30,6 +30,7 @@ __all__ = [
     "CreateUserDB",
     "UserSchema",
     "UserJWTSchema",
+    "EmailVerifyToken",
     "CreateReviewIn",
     "CreateReviewDB",
     "DeactivateReviewDB",
