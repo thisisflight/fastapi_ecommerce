@@ -22,6 +22,9 @@ pyjwt = "^2.10.1"
 pre-commit = "^4.2.0"
 contextvars = "^2.4"
 loguru = "^0.7.3"
+celery = "^5.5.3"
+redis = "^6.2.0"
+fastapi-mail = "^1.5.0"
 
 
 [build-system]
