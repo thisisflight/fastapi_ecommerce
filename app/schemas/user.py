@@ -5,6 +5,10 @@ from pydantic import BaseModel, EmailStr
 from app.backend import settings
 
 
+class EmailVerifyToken(BaseModel):
+    email_verify_token: str
+
+
 class CreateUserIn(BaseModel):
     first_name: str
     last_name: str
@@ -19,6 +23,7 @@ class CreateUserDB(BaseModel):
     username: str
     email: EmailStr
     hashed_password: str
+    is_active: bool = False
 
     class Config:
         from_attributes = True
