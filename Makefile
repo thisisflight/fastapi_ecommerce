@@ -13,7 +13,7 @@ lint:
 	pre-commit run --all-files
 
 celery:
-	celery -A app.backend.celery worker --loglevel=debug
+	celery -A app.backend.celery worker --loglevel=info
 
 help:
 	@echo "run - run server (9000 port)"

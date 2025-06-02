@@ -8,7 +8,7 @@ from app.backend import mail_conf, settings
 
 @shared_task()
 def send_verification_email(email: str, token: str):
-    verification_url = f"{settings.DOMAIN}/verify/email?token={token}"
+    verification_url = f"{settings.DOMAIN}/api/verify/email?token={token}"
 
     message = MessageSchema(
         subject="Активация почты",
