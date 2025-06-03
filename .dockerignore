@@ -1,0 +1,4 @@
+.ruff_cache
+dump.rdb
+.idea
+venv

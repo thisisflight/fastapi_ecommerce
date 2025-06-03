@@ -1,0 +1,35 @@
+x-common: &common
+  build: .
+  env_file: .env
+  depends_on:
+    cache:
+      condition: service_healthy
+
+services:
+  fastapi:
+    <<: *common
+    ports:
+      - "127.0.0.1:8000:8000"
+    command: /opt/.venv/bin/gunicorn app.main:app -c /opt/gunicorn.conf.py
+    restart: unless-stopped
+
+  celery:
+    <<: *common
+    command: /opt/.venv/bin/celery -A app.backend.celery worker --loglevel=info
+    restart: on-failure
+
+  cache:
+    image: redis:7.2.4-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 2s
+      retries: 3
+
+volumes:
+  redis_data:
