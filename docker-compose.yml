@@ -10,12 +10,12 @@ services:
     <<: *common
     ports:
       - "127.0.0.1:8000:8000"
-    command: /opt/.venv/bin/gunicorn app.main:app -c /opt/gunicorn.conf.py
+    command: gunicorn app.main:app -c /opt/gunicorn.conf.py
     restart: unless-stopped
 
   celery:
     <<: *common
-    command: /opt/.venv/bin/celery -A app.backend.celery worker --loglevel=info
+    command: celery -A app.backend.celery worker --loglevel=info
     restart: on-failure
 
   cache:
