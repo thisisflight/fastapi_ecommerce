@@ -11,8 +11,7 @@ COPY poetry.lock pyproject.toml ./
 
 RUN pip install poetry && \
     poetry config virtualenvs.in-project true && \
-    poetry install --only main --no-interaction --no-ansi && \
-    /opt/.venv/bin/celery --version
+    poetry install --only main --no-interaction --no-ansi
 
 COPY . .
 
@@ -28,5 +27,5 @@ COPY --from=builder --chown=appuser:appgroup /opt/.venv /opt/.venv
 COPY --from=builder --chown=appuser:appgroup /opt /opt
 
 ENV PATH="/opt/.venv/bin:$PATH"
-RUN celery --version
 USER appuser
+EXPOSE 8000
