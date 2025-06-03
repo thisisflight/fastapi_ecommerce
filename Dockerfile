@@ -18,14 +18,14 @@ COPY . .
 FROM python:3.12-slim
 
 RUN apt-get update && apt-get install -y libpq5 && \
-    groupadd -r appgroup && \
-    useradd -r -g appgroup -d /opt appuser && \
-    chown -R appuser:appgroup /opt
+    groupadd -r wwwgroup && \
+    useradd -r -g wwwgroup -d /opt www && \
+    chown -R www:wwwgroup /opt
 
 WORKDIR /opt
-COPY --from=builder --chown=appuser:appgroup /opt/.venv /opt/.venv
-COPY --from=builder --chown=appuser:appgroup /opt /opt
+COPY --from=builder --chown=www:wwwgroup /opt/.venv /opt/.venv
+COPY --from=builder --chown=www:wwwgroup /opt /opt
 
 ENV PATH="/opt/.venv/bin:$PATH"
-USER appuser
+USER www
 EXPOSE 8000
