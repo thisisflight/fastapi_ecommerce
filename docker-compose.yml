@@ -10,7 +10,7 @@ services:
     <<: *common
     ports:
       - "127.0.0.1:8000:8000"
-    command: gunicorn app.main:app -c /opt/gunicorn.conf.py
+    command: gunicorn app.main:app -c gunicorn.conf.py
     restart: unless-stopped
 
   celery:
@@ -27,8 +27,8 @@ services:
       - redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 3s
-      timeout: 2s
+      interval: 2s
+      timeout: 1s
       retries: 3
 
 volumes:
