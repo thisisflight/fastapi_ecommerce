@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y libpq5 && \
     chown -R www:wwwgroup /opt
 
 WORKDIR /opt
-COPY --from=builder --chown=www:wwwgroup /opt /opt
+COPY --from=builder --chown=www:wwwgroup /opt .
 
 ENV PATH="/opt/.venv/bin:$PATH"
 USER www
