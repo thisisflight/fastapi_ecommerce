@@ -6,10 +6,18 @@ x-common: &common
       condition: service_healthy
 
 services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "127.0.0.1:80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - fastapi
+    restart: unless-stopped
+
   fastapi:
     <<: *common
-    ports:
-      - "127.0.0.1:8000:8000"
     command: gunicorn app.main:app -c gunicorn.conf.py
     restart: unless-stopped
 
